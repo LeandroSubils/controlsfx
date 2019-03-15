@@ -29,6 +29,8 @@ package org.controlsfx.control.table;
 import com.sun.javafx.scene.control.skin.NestedTableColumnHeader;
 import com.sun.javafx.scene.control.skin.TableColumnHeader;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
+
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.WeakInvalidationListener;
@@ -219,12 +221,12 @@ public final class FilterPanel<T,R> extends VBox {
 
             //unselect items out of scope
             columnFilter.getFilterValues().stream()
-                    .filter(s -> !columnFilter.getSearchStrategy().test(searchBox.getText(), Optional.ofNullable(s.getValue()).map(Object::toString).orElse("")))
+                    .filter(s -> !columnFilter.getSearchStrategyNew().test(searchBox.getText(), Optional.ofNullable(s.getValue()).map(Object::toString).orElse(""), columnFilter.getTableColumn()))
                     .collect(Collectors.toList()).forEach(s -> s.selectedProperty().set(false));
 
             //select items in scope
             columnFilter.getFilterValues().stream()
-                    .filter(s -> columnFilter.getSearchStrategy().test(searchBox.getText(), Optional.ofNullable(s.getValue()).map(Object::toString).orElse("")))
+                    .filter(s -> columnFilter.getSearchStrategyNew().test(searchBox.getText(), Optional.ofNullable(s.getValue()).map(Object::toString).orElse(""), columnFilter.getTableColumn()))
                     .collect(Collectors.toList()).forEach(s -> s.selectedProperty().set(true));
         });
     }
@@ -282,5 +284,9 @@ public final class FilterPanel<T,R> extends VBox {
 
     public ColumnFilter<T,R> getColumnFilter() {
         return columnFilter;
+    }
+    @Override
+    public void requestFocus() {    	
+    	Platform.runLater(() -> searchBox.requestFocus());
     }
 }

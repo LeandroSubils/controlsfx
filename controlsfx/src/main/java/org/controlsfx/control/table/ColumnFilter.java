@@ -203,12 +203,12 @@ public final class ColumnFilter<T,R> {
     public BiPredicate<String,String> getSearchStrategy() {
         return searchStrategy;
     }
-    
+
     /**
      * Sets a search implementation for this TriPredicate for this given ColumnFilter.
      */    
-    public void setSearchStrategyNew(TriPredicate<String, String, TableColumn<T, ?>> searchStrategy2) {
-        this.searchStrategyNew = searchStrategy2;
+    public void setSearchStrategyNew(TriPredicate<String, String, TableColumn<T, ?>> searchStrategy) {
+        this.searchStrategyNew = searchStrategy;
     }
     
     /**
@@ -231,9 +231,15 @@ public final class ColumnFilter<T,R> {
     public boolean valueIsVisible(R value) {
         return visibleValuesDupeCounter.get(value) > 0;
     }
+    /**
+     * Sets a converter for the column to be used to show values at filter panel
+     */
     public void setConverter(Function<R, String> converter) {
     	this.converter = converter;
-    }    
+    } 
+    /**
+     * Gets a converter for the column to be used to show values at filter panel
+     */
     public Function<R, String> getConverter() {
     	return converter;
     }
@@ -364,6 +370,7 @@ public final class ColumnFilter<T,R> {
         tableColumn.setContextMenu(contextMenu);
 
         contextMenu.setOnShowing(ae -> initialize());
+        contextMenu.setOnShown(ae -> filterPanel.requestFocus());
     }
 
     private static final class CellIdentity<T> {
