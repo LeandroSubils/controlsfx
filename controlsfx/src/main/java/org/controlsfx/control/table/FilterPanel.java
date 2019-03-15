@@ -215,7 +215,7 @@ public final class FilterPanel<T,R> extends VBox {
 
             //filter scope based on search text
             filterList.setPredicate(val -> searchBox.getText().isEmpty() ||
-                    columnFilter.getSearchStrategy().test(searchBox.getText(), Optional.ofNullable(val.getValue()).map(Object::toString).orElse("")));
+                    columnFilter.getSearchStrategyNew().test(searchBox.getText(), Optional.ofNullable(val.getValue()).map(Object::toString).orElse(""), columnFilter.getTableColumn()));
 
             //unselect items out of scope
             columnFilter.getFilterValues().stream()

@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 public final class ColumnFilter<T,R> {
     private final TableFilter<T> tableFilter;
@@ -58,8 +59,10 @@ public final class ColumnFilter<T,R> {
     private boolean lastFilter = false;
     private boolean isDirty = false;
     private BiPredicate<String,String> searchStrategy = (inputString, subjectString) -> subjectString.toLowerCase().contains(inputString.toLowerCase());
+    private TriPredicate<String,String,TableColumn<T,?>> searchStrategyNew = (inputString, subjectString, tableColumn) -> searchStrategy.test(inputString, subjectString);
     private volatile FilterPanel filterPanel;
-
+    private Function<R, String> converter = Object::toString;
+    
     private boolean initialized = false;
 
     private final ListChangeListener<T> backingListListener = lc -> {
@@ -200,6 +203,20 @@ public final class ColumnFilter<T,R> {
     public BiPredicate<String,String> getSearchStrategy() {
         return searchStrategy;
     }
+    
+    /**
+     * Sets a search implementation for this TriPredicate for this given ColumnFilter.
+     */    
+    public void setSearchStrategyNew(TriPredicate<String, String, TableColumn<T, ?>> searchStrategy2) {
+        this.searchStrategyNew = searchStrategy2;
+    }
+    
+    /**
+     * Returns the search implementation for this given ColumnFilter.
+     */
+    public TriPredicate<String,String,TableColumn<T,?>> getSearchStrategyNew() {
+        return searchStrategyNew;
+    }
 
     /**
      * Indicates whether a filter is active on this ColumnFilter
@@ -213,6 +230,12 @@ public final class ColumnFilter<T,R> {
      */
     public boolean valueIsVisible(R value) {
         return visibleValuesDupeCounter.get(value) > 0;
+    }
+    public void setConverter(Function<R, String> converter) {
+    	this.converter = converter;
+    }    
+    public Function<R, String> getConverter() {
+    	return converter;
     }
 
     /**

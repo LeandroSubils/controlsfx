@@ -27,7 +27,7 @@ public final class FilterValue<T,R> extends HBox implements Comparable<FilterVal
 
         final CheckBox checkBox = new CheckBox();
         final Label label = new Label();
-        label.setText(Optional.ofNullable(value).map(Object::toString).orElse(null));
+        label.setText(Optional.ofNullable(value).map(columnFilter.getConverter()).orElse(null));
         scopeListener = (Observable v) -> label.textFillProperty().set(getInScopeProperty().get() ? Color.BLACK : Color.LIGHTGRAY);
         inScope.addListener(new WeakInvalidationListener(scopeListener));
         checkBox.selectedProperty().bindBidirectional(selectedProperty());
