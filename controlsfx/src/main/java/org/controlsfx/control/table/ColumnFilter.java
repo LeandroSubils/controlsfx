@@ -371,6 +371,12 @@ public final class ColumnFilter<T,R> {
 
         contextMenu.setOnShowing(ae -> initialize());
         contextMenu.setOnShown(ae -> filterPanel.requestFocus());
+        contextMenu.getScene().focusOwnerProperty().addListener((target,oldNode,newNode)->  {
+        	if (oldNode != null) {
+        		filterPanel.requestFocus();
+        	}
+        }); 
+       
     }
 
     private static final class CellIdentity<T> {
